@@ -1,14 +1,18 @@
 
+# coding: utf-8
 
-```python
+# In[1]:
+
+
 # Three Observable Trends
-# The aggregate of each news organization's tweets were consitently close to neutral but always negative sentiment.
-# The BBC had tweets with the most negative overall sentiment and the NYT had tweets closest to neutral. 
+# The aggregate of each news organization's tweets is consitently close to neutral.
+# The BBC had tweets with the most negative overall sentiment and CBS had tweets closest to neutral. 
 # All news organizations had a wide spread of tweet sentiments reaching high and low on the scale. 
-```
 
 
-```python
+# In[2]:
+
+
 import tweepy
 import json
 from config4 import access_token, access_token_secret, consumer_key, consumer_secret
@@ -18,23 +22,26 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 analyzer = SentimentIntensityAnalyzer()
-```
 
 
-```python
+# In[3]:
+
+
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
-```
 
 
-```python
+# In[4]:
+
+
 # Define which Twitter accounts to pull from: 
 news_organizations = ['BBCWorld', 'CBSNews', 'CNN', 'FoxNews', 'NYTIMES']
-```
 
 
-```python
+# In[5]:
+
+
 # Grab the Vader Analysis scores for the most recent 100 tweets for each account:
 source = []
 tweet_times = []
@@ -59,10 +66,11 @@ for account in news_organizations:
         pos_scores.append(analyzed['pos'])
         neu_scores.append(analyzed['neu'])
         neg_scores.append(analyzed['neg'])
-```
 
 
-```python
+# In[6]:
+
+
 # Add all of the data into a dataframe. 
 
 analysis_df = pd.DataFrame(data= source, columns=["Source"])
@@ -74,97 +82,11 @@ analysis_df['Neutral Score'] = neu_scores
 analysis_df['Negative Score'] = neg_scores
 analysis_df.to_csv("tweet_sentiment_analysis.csv")
 analysis_df.head()
-```
 
 
+# In[7]:
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Source</th>
-      <th>Time Stamp</th>
-      <th>Tweet Text</th>
-      <th>Compound Score</th>
-      <th>Positive Score</th>
-      <th>Neutral Score</th>
-      <th>Negative Score</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>BBCWorld</td>
-      <td>Fri Mar 09 16:15:15 +0000 2018</td>
-      <td>Mauritius President Gurib-Fakim to resign over...</td>
-      <td>-0.6486</td>
-      <td>0.0</td>
-      <td>0.569</td>
-      <td>0.431</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>BBCWorld</td>
-      <td>Fri Mar 09 16:09:23 +0000 2018</td>
-      <td>Catalonia Spain: Judge refuses to release Jord...</td>
-      <td>0.0000</td>
-      <td>0.0</td>
-      <td>1.000</td>
-      <td>0.000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>BBCWorld</td>
-      <td>Fri Mar 09 15:54:43 +0000 2018</td>
-      <td>Big cat gets CAT scan https://t.co/tl0hN1flxT</td>
-      <td>0.0000</td>
-      <td>0.0</td>
-      <td>1.000</td>
-      <td>0.000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>BBCWorld</td>
-      <td>Fri Mar 09 15:43:09 +0000 2018</td>
-      <td>@jvn "Yaass Queen!" 🙌</td>
-      <td>0.0000</td>
-      <td>0.0</td>
-      <td>1.000</td>
-      <td>0.000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>BBCWorld</td>
-      <td>Fri Mar 09 14:49:43 +0000 2018</td>
-      <td>RT @BBC_HaveYourSay: “Orange is the new Barack...</td>
-      <td>0.0000</td>
-      <td>0.0</td>
-      <td>1.000</td>
-      <td>0.000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
 # Separate the scores into individual lists by organization: 
 
 bbc_tweet_scores = comp_scores[0:100]
@@ -172,10 +94,11 @@ cbs_tweet_scores = comp_scores[100:200]
 cnn_tweet_scores = comp_scores[200:300]
 fox_tweet_scores = comp_scores[300:400]
 nytimes_tweet_scores = comp_scores[400:500]
-```
 
 
-```python
+# In[8]:
+
+
 # Graph the Compound Sentiment Scores in a Scatter Plot
 
 x_values = np.arange(0,len(bbc_tweet_scores), 1)
@@ -195,14 +118,10 @@ plt.ylim(-1,1)
 plt.show()
 plt.savefig("sentiment_analysis_over_time.png")
 
-```
+
+# In[10]:
 
 
-![png](output_7_0.png)
-
-
-
-```python
 # Graph Average of Compound Sentiment Scores in a Bar Chart
 
 names = ["BBC", "CBS", "CNN", "FOX", "New York Times"]
@@ -214,11 +133,7 @@ plt.bar(3, np.mean(fox_tweet_scores))
 plt.bar(4, np.mean(nytimes_tweet_scores))
 plt.xticks(x_pos, names)
 plt.ylabel("Average Tweet Polarity")
-plt.ylim(-.1, .1)
+plt.ylim(-.2, .1)
 plt.show()
 plt.savefig("tweet_polarity_by_organization")
-```
-
-
-![png](output_8_0.png)
 
